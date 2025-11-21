@@ -18,7 +18,7 @@ export default function Sidebar() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="w-64 bg-[#1A237E] h-screen flex flex-col fixed left-0 top-0 pt-16">
+    <div className="w-64 bg-[#0D224A] h-screen flex flex-col fixed left-0 top-0 pt-16">
 
       {/* User Info */}
       <div className="p-6 border-b border-[#2C388E] flex-shrink-0">
@@ -37,7 +37,7 @@ export default function Sidebar() {
             )}
           </div>
           <h3 className="text-white font-medium text-center mb-1">
-            {user ? `${user.first_name} ${user.last_name}`.toLowerCase() : 'User'}
+            {user ? `${user.first_name} ${user.last_name}` : 'User'}
           </h3>
           <p className="text-gray-300 text-sm text-center">
             {user?.email || 'user@example.com'}
@@ -50,9 +50,9 @@ export default function Sidebar() {
         <Link
           href="/todos"
           className={`
-            flex items-center space-x-3 px-6 py-3 mx-2 rounded-lg transition-colors
+            flex items-center space-x-3 py-3 px-6 transition-colors
             ${isActive('/todos')
-              ? 'bg-[#2C388E] text-white'
+              ? 'bg-gradient-to-r from-[#1D3474] to-[#D9D9D900] text-white'
               : 'text-gray-300 hover:bg-[#2C388E]/50 hover:text-white'
             }
           `}
@@ -76,10 +76,10 @@ export default function Sidebar() {
         <Link
           href="/profile"
           className={`
-            flex items-center space-x-3 px-6 py-3 mx-2 rounded-lg transition-colors
+            flex items-center space-x-3 px-6 py-3 transition-colors
             ${isActive('/profile')
-              ? 'bg-[#2C388E] text-white'
-              : 'text-gray-300 hover:bg-[#2C388E]/50 hover:text-white'
+              ? 'bg-gradient-to-r from-[#1D3474] to-[#D9D9D900] text-white'
+              : 'text-white'
             }
           `}
         >

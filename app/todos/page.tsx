@@ -30,6 +30,7 @@ import TodoItem from '@/components/TodoItem';
 import TodoForm from '@/components/TodoForm';
 import Button from '@/components/Button';
 import { ArrowDownUp, ArrowUpDown, Plus, Search } from 'lucide-react';
+import Image from 'next/image';
 
 function SortableTodoItem({
   todo,
@@ -284,11 +285,11 @@ export default function TodosPage() {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-[#1A237E] mb-2">Todos</h1>
-              <div className="w-16 h-1 bg-blue-600 rounded"></div>
+              <div className="w-16 h-1 bg-[#5272FF] rounded"></div>
             </div>
             <Button 
               onClick={() => setShowNewTaskForm(true)} 
-              className="bg-[#5272FF] hover:bg-blue-700 text-white flex items-center justify-between py-[11px]"
+              className="bg-[#5272FF] text-white flex items-center justify-between py-[11px]"
             >
               <Plus className="w-4 h-4 mr-2" /> New Task
             </Button>
@@ -316,10 +317,10 @@ export default function TodosPage() {
             <div className="relative filter-dropdown">
               <button
                 onClick={() => setShowFilter(!showFilter)}
-                className="px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-4"
+                className="px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors flex items-center space-x-4"
               >
-                <span className="font-medium text-[#000000">Sort By</span>
-                <ArrowUpDown className='' />
+                <span className="font-medium text-[#000000]">Sort By</span>
+                <ArrowUpDown className='w-4 h-4' />
               </button>
 
               {/* Filter Dropdown */}
@@ -408,7 +409,7 @@ export default function TodosPage() {
                       setShowNewTaskForm(false);
                       setEditingTodo(null);
                     }}
-                    className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                    className="text-[#000000] font-semibold text-sm underline cursor-pointer"
                   >
                     Go Back
                   </button>
@@ -428,28 +429,11 @@ export default function TodosPage() {
             </div>
           )}
 
-          {/* Your Tasks Heading */}
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Your Tasks</h2>
-          </div>
-
           {/* Todos List or Empty State */}
           {displayedTodos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16">
               <div className="relative mb-6">
-                <div className="w-32 h-40 relative">
-                  {/* Stacked documents illustration */}
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-32 bg-gray-200 rounded-lg shadow-md"></div>
-                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-32 bg-gray-300 rounded-lg shadow-lg">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-blue-500 rounded-t-lg"></div>
-                  </div>
-                  {/* Plus icon overlay */}
-                  <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </div>
-                </div>
+                <Image src="/empty-todo.png" width={200} height={200} alt='empty state' />
               </div>
               <p className="text-gray-500 text-lg font-medium">No todos yet</p>
             </div>

@@ -1,5 +1,6 @@
-'use client';
+'use client'
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -62,68 +63,100 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left illustration */}
+      <div className="hidden md:flex w-full max-w-[606px] bg-[#E2ECF8] items-center justify-center p-12">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              sign in to your existing account
-            </Link>
-          </p>
+          <Image
+            src="/create-account-illustration.png"
+            alt="Create account illustration"
+            width={720}
+            height={560}
+            className="object-contain"
+          />
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
+      </div>
+
+      {/* Right form area */}
+      <div className="flex w-full items-center justify-center p-8">
+        <div className="w-full max-w-lg">
+          <div className="text-center">
+            <h1 className="text-3xl md:text-[30px] font-bold text-[#0D224A]">Create your account</h1>
+            <p className="mt-2 text-sm text-[#4B5563]">Start managing your tasks efficiently</p>
+          </div>
+
+          <form className="mt-8" onSubmit={handleSubmit(onSubmit)}>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="First Name"
+                type="text"
+                autoComplete="given-name"
+                {...register('first_name')}
+                error={errors.first_name?.message as any}
+              />
+              <Input
+                label="Last Name"
+                type="text"
+                autoComplete="family-name"
+                {...register('last_name')}
+                error={errors.last_name?.message as any}
+              />
             </div>
-          )}
-          <div className="space-y-4">
-            <Input
-              label="First name"
-              type="text"
-              autoComplete="given-name"
-              {...register('first_name')}
-              error={errors.first_name?.message}
-            />
-            <Input
-              label="Last name"
-              type="text"
-              autoComplete="family-name"
-              {...register('last_name')}
-              error={errors.last_name?.message}
-            />
-            <Input
-              label="Email address"
-              type="email"
-              autoComplete="email"
-              {...register('email')}
-              error={errors.email?.message}
-            />
-            <Input
-              label="Password"
-              type="password"
-              autoComplete="new-password"
-              {...register('password')}
-              error={errors.password?.message}
-            />
-            <Input
-              label="Confirm password"
-              type="password"
-              autoComplete="new-password"
-              {...register('confirmPassword')}
-              error={errors.confirmPassword?.message}
-            />
-          </div>
-          <div>
-            <Button type="submit" className="w-full" isLoading={isLoading}>
-              Sign up
-            </Button>
-          </div>
-        </form>
+
+            <div className="mt-4">
+              <Input
+                label="Email"
+                type="email"
+                autoComplete="email"
+                {...register('email')}
+                error={errors.email?.message as any}
+              />
+            </div>
+
+            <div className="mt-4">
+              <Input
+                label="Password"
+                type="password"
+                autoComplete="new-password"
+                {...register('password')}
+                error={errors.password?.message as any}
+              />
+            </div>
+
+            <div className="mt-4">
+              <Input
+                label="Confirm Password"
+                type="password"
+                autoComplete="new-password"
+                {...register('confirmPassword')}
+                error={errors.confirmPassword?.message as any}
+              />
+            </div>
+
+            <div className="mt-6">
+              <Button
+                type="submit"
+                className="w-full rounded-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-400 hover:from-indigo-600 hover:to-indigo-500 text-white shadow-md"
+                isLoading={isLoading}
+              >
+                Sign Up
+              </Button>
+            </div>
+
+            <p className="mt-4 text-center text-sm text-gray-500">
+              Already have an account?{' '}
+              <Link href="/login" className="text-blue-600 font-medium hover:underline">
+                Log in
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -196,7 +196,7 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
         <Button
           type="submit"
           isLoading={isLoading}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+          className="bg-[#5272FF] text-white px-6 py-2 cursor-pointer"
         >
           Done
         </Button>

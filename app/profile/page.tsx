@@ -165,7 +165,7 @@ export default function ProfilePage() {
           {/* Title */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Account Information</h1>
-            <div className="w-48 h-1 bg-blue-600 rounded"></div>
+            <div className="w-48 h-1 bg-[#5272FF] rounded"></div>
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
@@ -198,7 +198,7 @@ export default function ProfilePage() {
                       </span>
                     )}
                   </div>
-                  <div className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                  <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#5272FF] rounded-full flex items-center justify-center border-2 border-white">
                     <Camera className="w-4 h-4 text-white" />
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingImage}
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
+                    className="bg-[#5272FF]  text-white flex items-center space-x-2"
                   >
                     {uploadingImage ? (
                       <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -328,7 +328,7 @@ export default function ProfilePage() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" isLoading={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button type="submit" isLoading={loading} className="bg-[#5272FF]  text-white">
                   Save Changes
                 </Button>
               </div>

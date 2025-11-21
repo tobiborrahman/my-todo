@@ -54,7 +54,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-[#F5F8FF]">
       {/* Left Illustration Panel */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-[#E6EEFF]">
+      <div className="hidden lg:flex lg:w-[606px] items-center justify-center bg-[#E2ECF8]">
         <div className="relative w-full h-full max-w-xl mx-auto flex items-center justify-center">
           {/* Illustration image - place your image at /public/login-illustration.png */}
           <Image
@@ -70,12 +70,12 @@ export default function LoginPage() {
 
       {/* Right Form Panel */}
       <div className="flex-1 flex items-center justify-center px-6 lg:px-24 py-12 bg-white">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-lg">
           <div className="mb-10">
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-[#0D224A] text-center lg:text-left">
+            <h1 className="text-3xl lg:text-[30px] font-extrabold text-[#0D224A] text-center">
               Log in to your account
             </h1>
-            <p className="mt-3 text-sm text-gray-600 text-center lg:text-left">
+            <p className="mt-3 text-sm text-gray-600 text-center">
               Start managing your tasks efficiently
             </p>
           </div>
