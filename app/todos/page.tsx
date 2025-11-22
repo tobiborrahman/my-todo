@@ -126,7 +126,7 @@ export default function TodosPage() {
       if (showLoading) setLoading(true);
       else setIsFetching(true);
       setError('');
-      const params: any = {};
+      const params: Record<string, string> = {};
       if (filterDate) {
         params.todo_date = filterDate;
       }
@@ -136,8 +136,9 @@ export default function TodosPage() {
       const response = await todoApi.getAll(params);
       const sorted = response.results.sort((a, b) => a.position - b.position);
       setTodos(sorted);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load todos');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
     } finally {
       if (showLoading) setLoading(false);
       else setIsFetching(false);
@@ -167,8 +168,9 @@ export default function TodosPage() {
       await loadTodos();
       setIsCreating(false);
       setShowNewTaskForm(false);
-    } catch (err: any) {
-      setError(err.message || 'Failed to create todo');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
       setIsCreating(false);
     }
   };
@@ -176,15 +178,17 @@ export default function TodosPage() {
   const handleUpdate = async (id: number, updates: Partial<Todo>) => {
     try {
       setError('');
-      const updateData: any = {};
+      const updateData: Partial<Todo> = {};
       if (updates.title !== undefined) updateData.title = updates.title;
       if (updates.description !== undefined) updateData.description = updates.description;
       if (updates.is_completed !== undefined) updateData.is_completed = updates.is_completed;
       if (updates.priority !== undefined) updateData.priority = updates.priority;
-      await todoApi.update(id, updateData);
+      type TodoUpdatePayload = Parameters<typeof todoApi.update>[1];
+      await todoApi.update(id, updateData as unknown as TodoUpdatePayload);
       await loadTodos();
-    } catch (err: any) {
-      setError(err.message || 'Failed to update todo');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
     }
   };
 
@@ -193,8 +197,9 @@ export default function TodosPage() {
       setError('');
       await todoApi.delete(id);
       await loadTodos();
-    } catch (err: any) {
-      setError(err.message || 'Failed to delete todo');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
       throw err;
     }
   };
@@ -217,8 +222,9 @@ export default function TodosPage() {
       await loadTodos();
       setEditingTodo(null);
       setShowNewTaskForm(false);
-    } catch (err: any) {
-      setError(err.message || 'Failed to update todo');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
     }
   };
 
@@ -238,8 +244,9 @@ export default function TodosPage() {
           position: index + 1,
         }));
         await todoApi.reorder(reorderedTodos);
-      } catch (err: any) {
-        setError(err.message || 'Failed to reorder todos');
+      } catch (err: unknown) {
+        const { getErrorMessage } = await import('@/lib/utils');
+        setError(getErrorMessage(err));
         await loadTodos();
       }
     }

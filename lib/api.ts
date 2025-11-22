@@ -48,7 +48,7 @@ async function fetchApi<T>(
   return response.json();
 }
 
-function createFormData(data: Record<string, any>): FormData {
+function createFormData(data: Record<string, unknown>): FormData {
   const formData = new FormData();
   Object.keys(data).forEach((key) => {
     const value = data[key];
@@ -119,7 +119,7 @@ export const authApi = {
     bio: string;
     profile_image: File;
   }>) => {
-    const formData = createFormData(data as Record<string, any>);
+    const formData = createFormData(data as Record<string, unknown>);
     return fetchApi<{
       id: number;
       email: string;
@@ -219,7 +219,7 @@ export const todoApi = {
       position: number;
     }>
   ) => {
-    const formData = createFormData(data as Record<string, any>);
+    const formData = createFormData(data as Record<string, unknown>);
     return fetchApi<{
       id: number;
       title: string;

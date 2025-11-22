@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const birthdayRef = useRef<HTMLInputElement | null>(null);
+  const birthdayRef = useRef<(HTMLInputElement & { showPicker?: () => void }) | null>(null);
 
   const {
     register,
@@ -101,8 +101,9 @@ export default function ProfilePage() {
       await authApi.updateProfile({ profile_image: file });
       setSuccess('Profile picture updated successfully!');
       await refreshUser();
-    } catch (err: any) {
-      setError(err.message || 'Failed to upload profile picture');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
       setPreviewImage(user?.profile_image || null);
     } finally {
       setUploadingImage(false);
@@ -117,8 +118,9 @@ export default function ProfilePage() {
       await authApi.updateProfile(data);
       setSuccess('Profile updated successfully!');
       await refreshUser();
-    } catch (err: any) {
-      setError(err.message || 'Failed to update profile');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -305,14 +307,16 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => {
                       if (birthdayRef.current) {
-                        if (typeof (birthdayRef.current as any).showPicker === 'function') {
-                          try {
-                            (birthdayRef.current as any).showPicker();
-                          } catch {
+                        if (birthdayRef.current) {
+                          if (typeof birthdayRef.current.showPicker === 'function') {
+                            try {
+                              birthdayRef.current.showPicker!();
+                            } catch {
+                              birthdayRef.current.focus();
+                            }
+                          } else {
                             birthdayRef.current.focus();
                           }
-                        } else {
-                          birthdayRef.current.focus();
                         }
                       }
                     }}
