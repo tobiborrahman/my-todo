@@ -284,7 +284,7 @@ export default function TodosPage() {
         <main className="flex-1 p-8">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-[#1A237E] mb-2">Todos</h1>
+              <h1 className="text-4xl font-bold text-[#0D224A] mb-2">Todos</h1>
               <div className="w-16 h-1 bg-[#5272FF] rounded"></div>
             </div>
             <Button 
@@ -433,11 +433,11 @@ export default function TodosPage() {
           )}
 
           {displayedTodos.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16">
+            <div className="flex flex-col items-center justify-center pt-[111px]">
               <div className="relative mb-6">
                 <Image src="/empty-todo.png" width={200} height={200} alt='empty state' />
               </div>
-              <p className="text-gray-500 text-lg font-medium">No todos yet</p>
+              <p className="text-[#201F1E] text-2xl font-medium">No todos yet</p>
             </div>
           ) : (
             <DndContext

@@ -44,13 +44,13 @@ export default function Header({ onNewTask, showNewTaskButton = true }: HeaderPr
 
         <div className="flex items-center space-x-4">
           <button
-            className="w-10 h-10 bg-[#5272FF] rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors relative"
+            className="w-10 h-10 bg-[#5272FF] rounded-lg flex items-center justify-center relative"
             onClick={() => setShowNotifications(!showNotifications)}
           >
             <Bell className="w-5 h-5 text-white" />
           </button>
 
-          <button className="w-10 h-10 bg-[#5272FF] rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors">
+          <button className="w-10 h-10 bg-[#5272FF] rounded-lg flex items-center justify-center">
             <CalendarDays className="w-5 h-5 text-white" />
           </button>
 

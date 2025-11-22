@@ -171,7 +171,7 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, dragHandleP
                 type="button"
                 onClick={() => setShowConfirmModal(false)}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                className="px-4 py-2 rounded-md bg-white cursor-pointer border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -179,7 +179,7 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, dragHandleP
                 type="button"
                 onClick={confirmDelete}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center"
+                className="px-4 py-2 rounded-md bg-red-600 cursor-pointer text-white hover:bg-red-700 disabled:opacity-50 flex items-center"
               >
                 {isDeleting ? (
                   <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
