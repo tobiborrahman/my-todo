@@ -9,23 +9,25 @@ interface TodoItemProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdate: (id: number, updates: Partial<Todo>) => void;
   onDelete: (id: number) => void;
   onEdit: (todo: Todo) => void;
+  // Props forwarded from dnd-kit for the drag handle (if provided)
+  dragHandleProps?: Record<string, any>;
 }
 
-export default function TodoItem({ todo, onUpdate, onDelete, onEdit, className = '', ...props }: TodoItemProps) {
+export default function TodoItem({ todo, onUpdate, onDelete, onEdit, dragHandleProps, className = '', ...props }: TodoItemProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const handleDelete = async (e: React.MouseEvent) => {
+  const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    
-    const confirmed = window.confirm('Are you sure you want to delete this todo?');
-    if (!confirmed) {
-      return;
-    }
+    setShowConfirmModal(true);
+  };
 
+  const confirmDelete = async () => {
     setIsDeleting(true);
     try {
       await onDelete(todo.id);
+      setShowConfirmModal(false);
     } catch (error) {
       console.error('Delete error:', error);
       alert('Failed to delete todo. Please try again.');
@@ -43,27 +45,26 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, className =
     switch (priority) {
       case 'extreme':
         return {
-          bg: 'bg-red-50',
-          text: 'text-red-700',
-          border: 'border-red-200'
+          bg: 'bg-[#FEE2E2]',
+          text: 'text-[#DC2626]',
+          border: 'border-[#FEE2E2]'
         };
       case 'moderate':
         return {
-          bg: 'bg-green-50',
-          text: 'text-green-700',
-          border: 'border-green-200'
+          bg: 'bg-[#DCFCE7]',
+          text: 'text-[#16A34A]',
+          border: 'border-[#DCFCE7]'
         };
       case 'low':
         return {
-          bg: 'bg-yellow-50',
-          text: 'text-yellow-700',
-          border: 'border-yellow-200'
+          bg: 'bg-[#FEF9C3]',
+          text: 'text-[#CA8A04]',
+          border: 'border-[#FEF9C3]'
         };
       default:
         return {
           bg: 'bg-gray-50',
           text: 'text-gray-700',
-          border: 'border-gray-200'
         };
     }
   };
@@ -79,38 +80,43 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, className =
   return (
     <div
       className={`
-        bg-white rounded-xl border border-green-100 p-5 transition-all hover:shadow-md
+        bg-white rounded-xl min-h-[180px] border-[1px] ${priorityStyles.border} p-5 transition-all hover:shadow-md
         ${todo.is_completed ? 'opacity-60' : ''}
         ${className}
       `}
       {...props}
     >
       <div className="flex flex-col h-full">
-        {/* Header: Title on left, Priority tag + Grid icon on right */}
         <div className="flex items-start justify-between mb-3">
           <h3
             className={`
-              text-lg font-bold flex-1 mr-4
+              text-lg font-bold flex-1 mr-2 line-clamp-1
               ${todo.is_completed ? 'line-through text-gray-500' : 'text-gray-900'}
             `}
           >
             {todo.title}
           </h3>
-          <div className="flex items-center space-x-1 flex-shrink-0">
+          <div className="flex items-center flex-shrink-0">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${priorityStyles.bg} ${priorityStyles.text} ${priorityStyles.border}`}
+              className={`px-3 py-1 rounded-sm text-xs font-medium ${priorityStyles.bg} ${priorityStyles.text}`}
             >
               {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
             </span>
-            <GripVertical className="w-4 h-4 text-[#8CA3CD]" />
+            <button
+              type="button"
+              {...(dragHandleProps || {})}
+              className="flex items-center justify-center rounded cursor-move"
+              aria-label="Drag handle"
+            >
+              <GripVertical className="w-4 h-4 text-[#8CA3CD]" />
+            </button>
           </div>
         </div>
 
-        {/* Description */}
         {todo.description && (
           <p
             className={`
-              text-sm mb-4 text-gray-700
+              text-sm mb-4 text-gray-700 line-clamp-2
               ${todo.is_completed ? 'line-through text-gray-400' : ''}
             `}
           >
@@ -118,7 +124,6 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, className =
           </p>
         )}
 
-        {/* Footer: Due date on left, Action buttons on right */}
         <div className="flex items-center justify-between mt-auto pt-3">
           {todo.todo_date && (
             <p className="text-sm text-gray-700">
@@ -130,7 +135,7 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, className =
             <button
               onClick={handleEdit}
               disabled={todo.is_completed || isDeleting}
-              className="w-8 h-8 bg-[#eef7ff] hover:bg-blue-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-8 h-8 bg-[#eef7ff] hover:bg-blue-200 rounded-lg cursor-pointer flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               title="Edit"
             >
               <PencilLine className="w-4 h-4 text-[#4f46e5]" />
@@ -138,21 +143,58 @@ export default function TodoItem({ todo, onUpdate, onDelete, onEdit, className =
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="w-8 h-8 bg-[#eef7ff] hover:bg-blue-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-8 h-8 bg-[#eef7ff] hover:bg-blue-200 rounded-lg cursor-pointer flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               title="Delete"
             >
-              {isDeleting ? (
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              ) : (
-                <Trash className="w-4 h-4 text-[#dc2626]" />
-              )}
+              <Trash className="w-4 h-4 text-[#dc2626]" />
             </button>
           </div>
         </div>
       </div>
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg max-w-sm w-full p-6 mx-4">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                  <Trash className="w-6 h-6 text-red-600" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900">Delete task</h3>
+                <p className="mt-2 text-sm text-gray-600">Are you sure you want to delete this task? This action cannot be undone.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setShowConfirmModal(false)}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center"
+              >
+                {isDeleting ? (
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <Trash className="w-4 h-4 mr-2" />
+                )}
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

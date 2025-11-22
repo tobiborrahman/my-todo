@@ -32,6 +32,7 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const birthdayRef = useRef<HTMLInputElement | null>(null);
 
   const {
     register,
@@ -162,7 +163,6 @@ export default function ProfilePage() {
         <Header showNewTaskButton={false} />
 
         <main className="flex-1 p-8">
-          {/* Title */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Account Information</h1>
             <div className="w-48 h-1 bg-[#5272FF] rounded"></div>
@@ -182,7 +182,6 @@ export default function ProfilePage() {
             )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Profile Picture Section */}
               <div className="flex items-center space-x-6 mb-8">
                 <div className="relative">
                   <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
@@ -229,9 +228,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Form Fields - Two Columns */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* First Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                   <input
@@ -244,7 +241,6 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                {/* Last Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                   <input
@@ -258,7 +254,6 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Email - Full Width */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                 <input
@@ -271,9 +266,7 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Two Columns Again */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Address */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                   <input
@@ -286,7 +279,6 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                {/* Contact Number */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
                   <input
@@ -300,36 +292,52 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Birthday */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Birthday</label>
                 <div className="relative">
                   <input
                     type="date"
                     {...register('birthday')}
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    ref={birthdayRef}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                   />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <Calendar className="w-5 h-5 text-gray-400" />
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (birthdayRef.current) {
+                        if (typeof (birthdayRef.current as any).showPicker === 'function') {
+                          try {
+                            (birthdayRef.current as any).showPicker();
+                          } catch {
+                            birthdayRef.current.focus();
+                          }
+                        } else {
+                          birthdayRef.current.focus();
+                        }
+                      }
+                    }}
+                    aria-label="Open date picker"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  >
+                    <Calendar className="w-5 h-5" />
+                  </button>
                 </div>
                 {errors.birthday && (
                   <p className="mt-1 text-sm text-red-600">{errors.birthday.message}</p>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+              <div className="flex items-center justify-center space-x-4 pt-6">    
+                <Button type="submit" isLoading={loading} className="bg-[#5272FF] text-white min-w-[200px] cursor-pointer">
+                  Save Changes
+                </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleCancel}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
+                  className="bg-[#8CA3CD] text-white min-w-[200px] cursor-pointer"
                 >
                   Cancel
-                </Button>
-                <Button type="submit" isLoading={loading} className="bg-[#5272FF]  text-white">
-                  Save Changes
                 </Button>
               </div>
             </form>

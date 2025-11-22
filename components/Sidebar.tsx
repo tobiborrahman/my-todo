@@ -19,8 +19,6 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 bg-[#0D224A] h-screen flex flex-col fixed left-0 top-0 pt-16">
-
-      {/* User Info */}
       <div className="p-6 border-b border-[#2C388E] flex-shrink-0">
         <div className="flex flex-col items-center">
           <div className="w-20 h-20 rounded-full bg-blue-300 flex items-center justify-center mb-3 overflow-hidden">
@@ -28,7 +26,7 @@ export default function Sidebar() {
               <img
                 src={user.profile_image}
                 alt={user.first_name}
-                className="w-full h-full rounded-full object-cover"
+                className="w-full h-full rounded-full object-cover border-[1px] border-white"
               />
             ) : (
               <span className="text-2xl font-bold text-[#1A237E]">
@@ -45,7 +43,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Navigation */}
       <div className="flex-1 py-4 overflow-y-auto">
         <Link
           href="/todos"
@@ -100,7 +97,6 @@ export default function Sidebar() {
         </Link>
       </div>
 
-      {/* Logout - Fixed at bottom */}
       <div className="p-4 border-t border-[#2C388E] flex-shrink-0 mt-auto">
         <button
           onClick={handleLogout}

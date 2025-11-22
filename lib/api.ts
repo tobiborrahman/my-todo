@@ -1,4 +1,3 @@
-// API utility functions
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://todo-app.pioneeralpha.com';
 
 export class ApiError extends Error {
@@ -18,7 +17,6 @@ async function fetchApi<T>(
     ...(options.headers as Record<string, string> || {}),
   };
 
-  // Don't set Content-Type for FormData - browser will set it with boundary
   if (!(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
@@ -38,13 +36,11 @@ async function fetchApi<T>(
       const error = await response.json();
       errorMessage = error.detail || error.message || errorMessage;
     } catch {
-      // If response is not JSON, use status text
       errorMessage = response.statusText || errorMessage;
     }
     throw new ApiError(response.status, errorMessage);
   }
 
-  // Handle 204 No Content
   if (response.status === 204) {
     return null as T;
   }
@@ -52,7 +48,6 @@ async function fetchApi<T>(
   return response.json();
 }
 
-// Helper to create FormData from object
 function createFormData(data: Record<string, any>): FormData {
   const formData = new FormData();
   Object.keys(data).forEach((key) => {
@@ -68,7 +63,6 @@ function createFormData(data: Record<string, any>): FormData {
   return formData;
 }
 
-// Auth API functions
 export const authApi = {
   login: async (credentials: { email: string; password: string }) => {
     const formData = createFormData(credentials);
@@ -77,7 +71,6 @@ export const authApi = {
       body: formData,
     });
     
-    // Store tokens
     if (typeof window !== 'undefined' && response) {
       localStorage.setItem('access_token', response.access);
       localStorage.setItem('refresh_token', response.refresh);
@@ -152,7 +145,6 @@ export const authApi = {
   },
 };
 
-// Todo API functions
 export const todoApi = {
   getAll: async (params?: {
     is_completed?: boolean;
@@ -251,7 +243,6 @@ export const todoApi = {
   },
 
   reorder: async (todos: { id: number; position: number }[]) => {
-    // Update position for each todo individually
     const promises = todos.map((todo) =>
       todoApi.update(todo.id, { position: todo.position })
     );

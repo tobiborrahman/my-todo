@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Todo } from '@/types';
 import Button from './Button';
+import { Calendar, TrashIcon } from 'lucide-react';
 
 const todoSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -24,6 +25,7 @@ interface TodoFormProps {
 }
 
 export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFormProps) {
+  const dateRef = useRef<HTMLInputElement | null>(null);
   const {
     register,
     handleSubmit,
@@ -61,7 +63,6 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-      {/* Title Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
         <input
@@ -74,39 +75,54 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
         )}
       </div>
 
-      {/* Date Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
         <div className="relative">
-          <input
-            type="date"
-            {...register('todo_date')}
-            min={getTodayDate()}
-            className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-          />
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <svg
-              className="w-5 h-5 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
+          {(() => {
+            const reg = register('todo_date') as any;
+            const { ref: regRef, ...regRest } = reg;
+            return (
+              <>
+                <input
+                  type="date"
+                  {...regRest}
+                  ref={(e) => {
+                    dateRef.current = e;
+                    if (typeof regRef === 'function') regRef(e);
+                    else if (regRef && 'current' in regRef) (regRef as any).current = e;
+                  }}
+                  min={getTodayDate()}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (dateRef.current) {
+                      if (typeof (dateRef.current as any).showPicker === 'function') {
+                        try {
+                          (dateRef.current as any).showPicker();
+                        } catch {
+                          dateRef.current!.focus();
+                        }
+                      } else {
+                        dateRef.current!.focus();
+                      }
+                    }
+                  }}
+                  aria-label="Open date picker"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                >
+                  <Calendar className="w-5 h-5" />
+                </button>
+              </>
+            );
+          })()}
         </div>
       </div>
 
-      {/* Priority Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">Priority</label>
         <div className="flex items-center space-x-6">
-          {/* Extreme */}
           <label className="flex items-center space-x-2 cursor-pointer group">
             <input
               type="radio"
@@ -129,7 +145,6 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
             <span className="text-gray-700 font-medium">Extreme</span>
           </label>
 
-          {/* Moderate */}
           <label className="flex items-center space-x-2 cursor-pointer group">
             <input
               type="radio"
@@ -152,7 +167,6 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
             <span className="text-gray-700 font-medium">Moderate</span>
           </label>
 
-          {/* Low */}
           <label className="flex items-center space-x-2 cursor-pointer group">
             <input
               type="radio"
@@ -177,7 +191,6 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
         </div>
       </div>
 
-      {/* Task Description */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Task Description</label>
         <textarea
@@ -191,7 +204,6 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
         )}
       </div>
 
-      {/* Action Buttons */}
       <div className="flex items-center justify-between pt-4">
         <Button
           type="submit"
@@ -203,21 +215,9 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
         <button
           type="button"
           onClick={onCancel}
-          className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors"
+          className="w-10 h-10 bg-red-500 hover:bg-red-600 cursor-pointer rounded-lg flex items-center justify-center transition-colors"
         >
-          <svg
-            className="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
+          <TrashIcon className="w-5 h-5 text-white" />
         </button>
       </div>
     </form>

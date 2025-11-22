@@ -65,8 +65,7 @@ function SortableTodoItem({
         onUpdate={onUpdate}
         onDelete={onDelete}
         onEdit={onEdit}
-        {...attributes}
-        {...listeners}
+        dragHandleProps={{ ...attributes, ...listeners }}
       />
     </div>
   );
@@ -77,6 +76,7 @@ export default function TodosPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [error, setError] = useState<string>('');
@@ -118,13 +118,14 @@ export default function TodosPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadTodos();
+      loadTodos(true);
     }
   }, [isAuthenticated, filterDate]);
 
-  const loadTodos = async () => {
+  const loadTodos = async (showLoading = false) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
+      else setIsFetching(true);
       setError('');
       const params: any = {};
       if (filterDate) {
@@ -139,7 +140,8 @@ export default function TodosPage() {
     } catch (err: any) {
       setError(err.message || 'Failed to load todos');
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
+      else setIsFetching(false);
     }
   };
 
@@ -270,7 +272,6 @@ export default function TodosPage() {
     return null;
   }
 
-  // Use todos directly since API handles filtering
   const displayedTodos = todos;
 
   return (
@@ -281,7 +282,6 @@ export default function TodosPage() {
         <Header />
         
         <main className="flex-1 p-8">
-          {/* Title */}
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-[#1A237E] mb-2">Todos</h1>
@@ -289,13 +289,12 @@ export default function TodosPage() {
             </div>
             <Button 
               onClick={() => setShowNewTaskForm(true)} 
-              className="bg-[#5272FF] text-white flex items-center justify-between py-[11px]"
+              className="bg-[#5272FF] text-white flex items-center justify-between py-[11px] cursor-pointer"
             >
               <Plus className="w-4 h-4 mr-2" /> New Task
             </Button>
           </div>
 
-          {/* Search and Filter Bar */}
           <div className="mb-6 flex items-center space-x-4">
             <div className="flex-1 relative">
               <input
@@ -307,13 +306,21 @@ export default function TodosPage() {
               />
               <button
                 onClick={() => loadTodos()}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 w-[50px] h-[50px] bg-[#5272FF] rounded-lg flex items-center justify-center transition-colors"
+                aria-busy={isFetching}
+                disabled={isFetching}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 w-[50px] h-[50px] bg-[#5272FF] rounded-lg flex items-center justify-center transition-colors cursor-pointer disabled:opacity-60"
               >
-                <Search className="w-5 h-5 text-white" />
+                {isFetching ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <Search className="w-5 h-5 text-white" />
+                )}
               </button>
             </div>
 
-            {/* Filter Button */}
             <div className="relative filter-dropdown">
               <button
                 onClick={() => setShowFilter(!showFilter)}
@@ -323,7 +330,6 @@ export default function TodosPage() {
                 <ArrowUpDown className='w-4 h-4' />
               </button>
 
-              {/* Filter Dropdown */}
               {showFilter && (
                 <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                   <div className="p-2">
@@ -395,11 +401,9 @@ export default function TodosPage() {
             </div>
           )}
 
-          {/* New Task Form Modal */}
           {showNewTaskForm && (
             <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
               <div className="bg-white rounded-xl p-8 w-full max-w-lg mx-4 shadow-2xl">
-                {/* Modal Header */}
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">
                     {editingTodo ? 'Edit Task' : 'Add New Task'}
@@ -415,7 +419,6 @@ export default function TodosPage() {
                   </button>
                 </div>
                 
-                {/* Form */}
                 <TodoForm
                   todo={editingTodo || undefined}
                   onSubmit={editingTodo ? handleEditSubmit : handleCreate}
@@ -429,7 +432,6 @@ export default function TodosPage() {
             </div>
           )}
 
-          {/* Todos List or Empty State */}
           {displayedTodos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16">
               <div className="relative mb-6">

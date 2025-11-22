@@ -33,7 +33,6 @@ export default function Header({ onNewTask, showNewTaskButton = true }: HeaderPr
   return (
     <header className="bg-white border-b border-gray-200 px-[69.5px] py-4">
       <div className="flex items-center justify-between">
-        {/* Logo */}
         <div className="flex items-center space-x-2">
           <Image
             src="/logo.png"
@@ -43,9 +42,7 @@ export default function Header({ onNewTask, showNewTaskButton = true }: HeaderPr
           />
         </div>
 
-        {/* Right Side Icons and Button */}
         <div className="flex items-center space-x-4">
-          {/* Notifications */}
           <button
             className="w-10 h-10 bg-[#5272FF] rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors relative"
             onClick={() => setShowNotifications(!showNotifications)}
@@ -53,12 +50,10 @@ export default function Header({ onNewTask, showNewTaskButton = true }: HeaderPr
             <Bell className="w-5 h-5 text-white" />
           </button>
 
-          {/* Calendar/Grid Icon */}
           <button className="w-10 h-10 bg-[#5272FF] rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors">
             <CalendarDays className="w-5 h-5 text-white" />
           </button>
 
-          {/* Date */}
           <div className="flex flex-col leading-tight text-[#0D224A]">
     <p className="text-[15px]">{dayName}</p>
     <p className="text-[15px]">{date}</p>
