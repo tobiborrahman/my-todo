@@ -43,8 +43,9 @@ export default function LoginPage() {
     try {
       await login(data);
       router.push('/todos');
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+    } catch (err: unknown) {
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }

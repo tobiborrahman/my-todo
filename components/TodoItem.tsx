@@ -9,7 +9,7 @@ interface TodoItemProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdate: (id: number, updates: Partial<Todo>) => void;
   onDelete: (id: number) => void;
   onEdit: (todo: Todo) => void;
-  dragHandleProps?: Record<string, any>;
+  dragHandleProps?: Record<string, unknown>;
 }
 
 export default function TodoItem({ todo, onUpdate, onDelete, onEdit, dragHandleProps, className = '', ...props }: TodoItemProps) {

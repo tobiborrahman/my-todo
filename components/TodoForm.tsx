@@ -25,7 +25,7 @@ interface TodoFormProps {
 }
 
 export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFormProps) {
-  const dateRef = useRef<HTMLInputElement | null>(null);
+  const dateRef = useRef<(HTMLInputElement & { showPicker?: () => void }) | null>(null);
   const {
     register,
     handleSubmit,
@@ -78,19 +78,16 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
         <div className="relative">
+          {/* Controlled date input so we can reference it and avoid register ref merging */}
           {(() => {
-            const reg = register('todo_date') as any;
-            const { ref: regRef, ...regRest } = reg;
+            const todoDate = watch('todo_date') || '';
             return (
               <>
                 <input
                   type="date"
-                  {...regRest}
-                  ref={(e) => {
-                    dateRef.current = e;
-                    if (typeof regRef === 'function') regRef(e);
-                    else if (regRef && 'current' in regRef) (regRef as any).current = e;
-                  }}
+                  value={todoDate}
+                  onChange={(e) => setValue('todo_date', e.target.value)}
+                  ref={dateRef}
                   min={getTodayDate()}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                 />
@@ -98,14 +95,14 @@ export default function TodoForm({ todo, onSubmit, onCancel, isLoading }: TodoFo
                   type="button"
                   onClick={() => {
                     if (dateRef.current) {
-                      if (typeof (dateRef.current as any).showPicker === 'function') {
+                      if (typeof dateRef.current.showPicker === 'function') {
                         try {
-                          (dateRef.current as any).showPicker();
+                          dateRef.current.showPicker!();
                         } catch {
-                          dateRef.current!.focus();
+                          dateRef.current.focus();
                         }
                       } else {
-                        dateRef.current!.focus();
+                        dateRef.current.focus();
                       }
                     }
                   }}

@@ -54,8 +54,11 @@ export default function SignupPage() {
         password: data.password,
       });
       router.push('/todos');
-    } catch (err: any) {
-      setError(err.message || 'Signup failed. Please try again.');
+    } catch (err: unknown) {
+      // avoid using `any` — extract a safe message
+      // import helper lazily to avoid circular imports in some setups
+      const { getErrorMessage } = await import('@/lib/utils');
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -95,14 +98,14 @@ export default function SignupPage() {
                 type="text"
                 autoComplete="given-name"
                 {...register('first_name')}
-                error={errors.first_name?.message as any}
+                error={errors.first_name?.message}
               />
               <Input
                 label="Last Name"
                 type="text"
                 autoComplete="family-name"
                 {...register('last_name')}
-                error={errors.last_name?.message as any}
+                error={errors.last_name?.message}
               />
             </div>
 
@@ -112,7 +115,7 @@ export default function SignupPage() {
                 type="email"
                 autoComplete="email"
                 {...register('email')}
-                error={errors.email?.message as any}
+                error={errors.email?.message}
               />
             </div>
 
@@ -122,7 +125,7 @@ export default function SignupPage() {
                 type="password"
                 autoComplete="new-password"
                 {...register('password')}
-                error={errors.password?.message as any}
+                error={errors.password?.message}
               />
             </div>
 
@@ -132,7 +135,7 @@ export default function SignupPage() {
                 type="password"
                 autoComplete="new-password"
                 {...register('confirmPassword')}
-                error={errors.confirmPassword?.message as any}
+                error={errors.confirmPassword?.message}
               />
             </div>
 
