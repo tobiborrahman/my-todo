@@ -38,7 +38,6 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
   });
 
-  // Redirect if already authenticated
   if (isAuthenticated) {
     router.push('/todos');
     return null;

@@ -85,7 +85,6 @@ export default function TodosPage() {
   const [filterDate, setFilterDate] = useState<string | null>(null);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
 
-  // Close filter dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;

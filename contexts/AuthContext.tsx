@@ -21,7 +21,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on mount
     const loadUser = async () => {
       const accessToken = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (accessToken) {
@@ -33,7 +32,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } catch (error) {
           console.error('Error loading user:', error);
-          // Clear invalid tokens
           if (typeof window !== 'undefined') {
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
@@ -49,7 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (credentials: LoginCredentials) => {
     try {
       await authApi.login(credentials);
-      // Fetch user profile after login
       const userData = await authApi.getProfile();
       if (typeof window !== 'undefined') {
         localStorage.setItem('user', JSON.stringify(userData));
@@ -63,7 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (data: SignupData) => {
     try {
       await authApi.signup(data);
-      // Automatically login after signup
       await login({ email: data.email, password: data.password });
     } catch (error) {
       throw error;
@@ -88,7 +84,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
-      // Clear local state even if API call fails
       setUser(null);
       if (typeof window !== 'undefined') {
         localStorage.removeItem('access_token');

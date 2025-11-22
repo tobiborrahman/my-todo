@@ -9,7 +9,6 @@ interface TodoItemProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdate: (id: number, updates: Partial<Todo>) => void;
   onDelete: (id: number) => void;
   onEdit: (todo: Todo) => void;
-  // Props forwarded from dnd-kit for the drag handle (if provided)
   dragHandleProps?: Record<string, any>;
 }
 
